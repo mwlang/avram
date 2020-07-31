@@ -31,7 +31,8 @@ module Avram
 
   def self.initialize_logging
     Avram::Events::QueryEvent.subscribe do |event, duration|
-      puts event
+      next if event.query.starts_with?("TRUNCATE")
+      pp! event
       puts duration
       # Avram::QueryLog.dexter.info do
       #   {query: event.query}
@@ -46,7 +47,7 @@ module Avram
     end
 
     Avram::Events::SaveFailedEvent.subscribe do |event|
-      pp! event
+      # pp! event
       # Avram::SaveFailedLog.dexter.warn do
       #   {
       #     failed_to_save: event.operation_class.name,
