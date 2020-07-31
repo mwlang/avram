@@ -94,9 +94,7 @@ module Avram::Queryable(T)
   # ```
   def delete : Int64
     query.delete
-    database.run do |db|
-      db.exec(query.statement, args: query.args).rows_affected
-    end
+    database.exec(query.statement, args: query.args).rows_affected
   end
 
   # Update the records using the query's where clauses, or all records if no wheres are added.
@@ -213,9 +211,7 @@ module Avram::Queryable(T)
   end
 
   def exec_scalar
-    database.run do |db|
-      db.scalar query.statement, args: query.args
-    end
+    database.scalar query.statement, args: query.args
   end
 
   private def ordered_query

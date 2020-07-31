@@ -52,11 +52,39 @@ abstract class Avram::Database
     end
   end
 
-  def self.run
-    new.run do |*yield_args|
-      yield *yield_args
+  # Methods without a block
+  {% for crystal_db_alias in [:exec, :scalar, :query, :query_all, :query_one, :query_each] %}
+    # Same as crystal-db's `DB::QueryMethods#{{ crystal_db_alias.id }}` but with instrumentation
+    def {{ crystal_db_alias.id }}(*args, **named_args)
+      run do |db|
+        db.{{ crystal_db_alias.id }}(*args, **named_args)
+      end
     end
-  end
+
+    # Same as crystal-db's `DB::QueryMethods#{{ crystal_db_alias.id }}` but with instrumentation
+    def self.{{ crystal_db_alias.id }}(*args, **named_args)
+      new.{{ crystal_db_alias.id }}(*args, **named_args)
+    end
+  {% end %}
+
+  # Methods with a block
+  {% for crystal_db_alias in [:query, :query_all, :query_one, :query_each] %}
+    # Same as crystal-db's `DB::QueryMethods#{{ crystal_db_alias }}` but with instrumentation
+    def {{ crystal_db_alias.id }}(*args, **named_args)
+      run do |db|
+        db.{{ crystal_db_alias.id }}(*args, **named_args) do |*yield_args|
+          yield *yield_args
+        end
+      end
+    end
+
+    # Same as crystal-db's `DB::QueryMethods#{{ crystal_db_alias }}` but with instrumentation
+    def {{ crystal_db_alias.id }}(*args, **named_args)
+      new.{{ crystal_db_alias.id }}(*args, **named_args) do |*yield_args|
+        yield *yield_args
+      end
+    end
+  {% end %}
 
   def self.credentials
     settings.credentials
@@ -64,6 +92,12 @@ abstract class Avram::Database
 
   protected def url
     settings.credentials.url
+  end
+
+  def self.run
+    new.run do |*yield_args|
+      yield *yield_args
+    end
   end
 
   # :nodoc:
@@ -174,9 +208,7 @@ abstract class Avram::Database
       table_names = database.table_names
       return if table_names.empty?
       statement = ("TRUNCATE TABLE #{table_names.map { |name| name }.join(", ")} RESTART IDENTITY CASCADE;")
-      database.run do |db|
-        db.exec statement
-      end
+      database.exec statement
     end
 
     def delete
@@ -184,9 +216,7 @@ abstract class Avram::Database
       return if table_names.empty?
       table_names.each do |t|
         statement = ("DELETE FROM #{t}")
-        database.run do |db|
-          db.exec statement
-        end
+        database.exec statement
       end
     end
   end
