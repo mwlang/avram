@@ -1,9 +1,9 @@
-class Avram::Events::SaveFailedEvent < Pulsar::TimedEvent
+class Avram::Events::SaveFailedEvent < Pulsar::Event
   property :operation_class, :invalid_attributes
 
   def initialize(
-    @operation_class : Avram::SaveOperation.class,
-    @invalid_attributes : Array(Avram::Attribute)
+    @operation_class : String,
+    @invalid_attributes : Array(Avram::GenericAttribute)
   )
   end
 end

@@ -47,9 +47,20 @@ abstract class Avram::SaveOperation(T) < Avram::Operation
 
   # :nodoc:
   def published_save_failed_event
+    invalid_attributes = attributes.reject(&.valid?).map do |attr|
+      Avram::GenericAttribute.new(
+        name: attr.name,
+        param: attr.param.try(&.to_s),
+        value: attr.value.try(&.to_s),
+        original_value: attr.original_value.try(&.to_s),
+        param_key: attr.param_key,
+        errors: attr.errors
+      )
+    end
+
     Avram::Events::SaveFailedEvent.new(
-      operation_class: self.class,
-      invalid_attributes: attributes.reject(&.valid?)
+      operation_class: self.class.name,
+      invalid_attributes: invalid_attributes
     ).publish
   end
 

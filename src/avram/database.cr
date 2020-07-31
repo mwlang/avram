@@ -55,32 +55,32 @@ abstract class Avram::Database
   # Methods without a block
   {% for crystal_db_alias in [:exec, :scalar, :query, :query_all, :query_one, :query_each] %}
     # Same as crystal-db's `DB::QueryMethods#{{ crystal_db_alias.id }}` but with instrumentation
-    def {{ crystal_db_alias.id }}(*args, **named_args)
+    def {{ crystal_db_alias.id }}(*non_named_args, **named_args)
       run do |db|
-        db.{{ crystal_db_alias.id }}(*args, **named_args)
+        db.{{ crystal_db_alias.id }}(*non_named_args, **named_args)
       end
     end
 
     # Same as crystal-db's `DB::QueryMethods#{{ crystal_db_alias.id }}` but with instrumentation
-    def self.{{ crystal_db_alias.id }}(*args, **named_args)
-      new.{{ crystal_db_alias.id }}(*args, **named_args)
+    def self.{{ crystal_db_alias.id }}(*non_named_args, **named_args)
+      new.{{ crystal_db_alias.id }}(*non_named_args, **named_args)
     end
   {% end %}
 
   # Methods with a block
   {% for crystal_db_alias in [:query, :query_all, :query_one, :query_each] %}
     # Same as crystal-db's `DB::QueryMethods#{{ crystal_db_alias }}` but with instrumentation
-    def {{ crystal_db_alias.id }}(*args, **named_args)
+    def {{ crystal_db_alias.id }}(*non_named_args, **named_args)
       run do |db|
-        db.{{ crystal_db_alias.id }}(*args, **named_args) do |*yield_args|
+        db.{{ crystal_db_alias.id }}(*non_named_args, **named_args) do |*yield_args|
           yield *yield_args
         end
       end
     end
 
     # Same as crystal-db's `DB::QueryMethods#{{ crystal_db_alias }}` but with instrumentation
-    def {{ crystal_db_alias.id }}(*args, **named_args)
-      new.{{ crystal_db_alias.id }}(*args, **named_args) do |*yield_args|
+    def {{ crystal_db_alias.id }}(*non_named_args, **named_args)
+      new.{{ crystal_db_alias.id }}(*non_named_args, **named_args) do |*yield_args|
         yield *yield_args
       end
     end
