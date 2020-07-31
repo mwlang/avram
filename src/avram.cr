@@ -28,4 +28,29 @@ module Avram
   QueryLog       = Log.for("query")
   FailedQueryLog = Log.for("failed_query")
   SaveFailedLog  = Log.for("save_failed")
+
+  def self.initialize_logging
+    # Avram::Events::QueryEvent.subscribe do |event, duration|
+    #   Avram::QueryLog.dexter.info do
+    #     {query: event.query}
+    #   end
+    # end
+
+    # Avram::Events::FailedQueryEvent.subscribe do |event|
+    #   Avram::FailedQueryLog.dexter.info do
+    #     {query: event.query}
+    #   end
+    # end
+
+    # Avram::Events::SaveFailedEvent.subscribe do |event|
+    #   Avram::SaveFailedLog.dexter.warn do
+    #     {
+    #       failed_to_save: event.operation_class.name,
+    #       # validation_errors: error_messages_as_string,
+    #     }
+    #   end
+    # end
+  end
 end
+
+Avram.initialize_logging
