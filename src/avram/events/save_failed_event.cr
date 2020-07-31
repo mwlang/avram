@@ -1,5 +1,5 @@
 class Avram::Events::SaveFailedEvent < Pulsar::Event
-  property :operation_class, :invalid_attributes
+  getter :operation_class, :invalid_attributes
 
   def initialize(
     @operation_class : String,

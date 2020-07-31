@@ -1,5 +1,5 @@
 class Avram::Events::QueryEvent < Pulsar::TimedEvent
-  property :query, :args
+  getter :query, :args
 
   def initialize(@query : String, @args : Array(String))
   end

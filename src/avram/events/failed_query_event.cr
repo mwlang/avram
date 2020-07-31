@@ -1,5 +1,5 @@
 class Avram::Events::FailedQueryEvent < Pulsar::Event
-  property :query, :args
+  getter :query, :args
 
   def initialize(@query : String, @args : Array(String))
   end
